@@ -12,7 +12,7 @@ using TMPro;
 ///  OnPointerEnter/Exit are used by this class, use the virtual methods PointerEnter and PointerExit provided instead.
 /// </remarks>
 [RequireComponent(typeof(RectTransform))]
-public abstract class WorldBoundIcon : SelectableUI {
+public class WorldBoundIcon : SelectableUI {
 
     [HideInInspector]
     public WorldClickable partner;
@@ -33,6 +33,8 @@ public abstract class WorldBoundIcon : SelectableUI {
     public bool focused = false;
     public float scaleOnHover = 1;
     public float scaleOnSelect = 1;
+    public bool hideOnLOSBreak = false;
+
     private Vector3 scaleNormal;
     private Vector3 scaleHover;
     private Vector3 scaleSelect;
