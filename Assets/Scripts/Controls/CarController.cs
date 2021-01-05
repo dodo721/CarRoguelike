@@ -7,7 +7,6 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
 
-    [Header("Linear motion")]
     [Min(0)]
     public float acceleration;
     [Min(0)]
@@ -16,14 +15,8 @@ public class CarController : MonoBehaviour
     public float decceleration;
     [Min(0)]
     public float maxReverseSpeed;
-
-    [Header("Angular motion")]
     [Min(0)]
     public float angularAcceleration;
-    [Min(0)]
-    public float maxAngularSpeed;
-    [Min(0)]
-    public float linearSpeedFactor;
 
     private Rigidbody rb;
     private bool accelerating;
@@ -97,10 +90,9 @@ public class CarController : MonoBehaviour
                 rb.AddForce((-transform.forward) * acceleration, ForceMode.Acceleration);
             }
         }
-        if (rb.angularVelocity.magnitude < maxAngularSpeed) {
-            float steerStrength = steer * angularAcceleration * (rb.velocity.magnitude / (maxAngularSpeed * linearSpeedFactor));
-            if (Mathf.Abs(steerStrength) > 0)
-                rb.AddTorque(Vector3.up * steerStrength, ForceMode.Acceleration);
+        float steerStrength = steer * angularAcceleration;
+        if (Mathf.Abs(steerStrength) > 0) {
+            rb.AddTorque(Vector3.up * steerStrength, ForceMode.Acceleration);
         }
     }
 }
