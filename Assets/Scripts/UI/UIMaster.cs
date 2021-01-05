@@ -7,13 +7,7 @@ using UnityEngine.EventSystems;
 public class UIMaster : MonoBehaviour
 {
 
-    public Canvas screenCanvas;
-    public Canvas worldCanvas;
-
-    public Transform iconSpace;
     public RectTransform focusLock;
-    public WorldBoundIcon charIconPrefab;
-    public Dialogue dialoguePrefab;
 
     public static UIMaster i;
 
@@ -32,11 +26,6 @@ public class UIMaster : MonoBehaviour
         hoveredUI = new HashSet<SelectableUI>();
         worldBoundIcons = new List<WorldBoundIcon>();
         worldClickableLayers = new List<int>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
     }
 
     /*

@@ -10,13 +10,17 @@ public class WorldClickable : MonoBehaviour {
 
     void Start () {
         if (Application.isPlaying) {
-            WorldBoundIcon icon = Instantiate(
-                iconPrefab.gameObject,
-                iconPrefab.transform.position,
-                iconPrefab.transform.rotation,
-                spawnParent.transform
-                ).GetComponent<WorldBoundIcon>();
-            icon.BindToWorldObject(gameObject);
+            if (partner == null && iconPrefab != null) {
+                WorldBoundIcon icon = Instantiate(
+                    iconPrefab.gameObject,
+                    iconPrefab.transform.position,
+                    iconPrefab.transform.rotation,
+                    spawnParent.transform
+                    ).GetComponent<WorldBoundIcon>();
+                icon.BindToWorldObject(gameObject);
+            } else if (partner != null) {
+                partner.BindToWorldObject(gameObject);
+            }
         }
     }
 
