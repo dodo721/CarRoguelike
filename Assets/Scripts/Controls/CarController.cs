@@ -24,7 +24,8 @@ public class CarController : MonoBehaviour
     private Rigidbody rb;
     private bool accelerating;
     private bool reversing;
-    private float steer; // -1 -> 1 from left -> right
+    [HideInInspector]
+    public float steer; // -1 -> 1 from left -> right
     private Vector3 carSphereOffset;
 
     // Start is called before the first frame update
@@ -86,8 +87,7 @@ public class CarController : MonoBehaviour
 
     // Like Update, but is called with every physics update instead of every rendered frame
     void FixedUpdate () {
-        transform.up = Vector3.Lerp(transform.up, carSphere.groundNormal, Time.deltaTime * groundAdjustSmooth);
-        carBody.Rotate(new Vector3(0, steer * angularAcceleration, 0));
+        
     }
 
 }
