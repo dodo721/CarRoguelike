@@ -24,7 +24,9 @@ public class CarSphere : MonoBehaviour
     }
     
     void Update () {
-        
+        car.transform.up = Vector3.Lerp(car.transform.up, groundNormal, Time.deltaTime * car.groundAdjustSmooth);
+        if (gas || reverse)
+            car.carBody.Rotate(new Vector3(0, car.steer * car.angularAcceleration * Time.deltaTime, 0));
     }
 
     void FixedUpdate() {
