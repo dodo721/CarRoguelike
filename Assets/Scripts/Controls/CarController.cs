@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Physics based controller, requires physics to be active
-[RequireComponent(typeof(Rigidbody))]
 public class CarController : MonoBehaviour
 {
-
+    [Header("Movement")]
     [Min(0)]
     public float acceleration;
     [Min(0)]
@@ -18,15 +16,23 @@ public class CarController : MonoBehaviour
     [Min(0)]
     public float angularAcceleration;
 
+    [Header("Car Sphere")]
+    public float groundAdjustSmooth = 8f;
+    public Transform carBody;
+    public CarSphere carSphere;
+
     private Rigidbody rb;
     private bool accelerating;
     private bool reversing;
-    private float steer; // -1 -> 1 from left -> right
+    [HideInInspector]
+    public float steer; // -1 -> 1 from left -> right
+    private Vector3 carSphereOffset;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        carSphereOffset = transform.position - carSphere.transform.position;
     }
 
     //////////////////////////////////////////////////
@@ -75,24 +81,13 @@ public class CarController : MonoBehaviour
     //  PHYSICS STUFF                               //
     //////////////////////////////////////////////////
 
-    // Like Update, but is called with every physics update instead of every rendered frame
-    // Physics in Unity all have deltaTime accounted for inherently (obviously) - so using this keeps our physics calculations in sync with the game
-    void FixedUpdate () {
-        if (accelerating) {
-            // If transform.forward dot rb.velocity < 0 then the velocity is in the other direction
-            // We don't want the car to stop responding if going the max speed backwards!
-            if (rb.velocity.magnitude < maxSpeed || Vector3.Dot(transform.forward, rb.velocity) < 0) {
-                rb.AddForce(transform.forward * acceleration, ForceMode.Acceleration);
-            }
-        }
-        if (reversing) {
-            if (rb.velocity.magnitude < maxSpeed || Vector3.Dot(-transform.forward, rb.velocity) < 0) {
-                rb.AddForce((-transform.forward) * acceleration, ForceMode.Acceleration);
-            }
-        }
-        float steerStrength = steer * angularAcceleration;
-        if (Mathf.Abs(steerStrength) > 0) {
-            rb.AddTorque(Vector3.up * steerStrength, ForceMode.Acceleration);
-        }
+    void Update () {
+        transform.position = carSphere.transform.position + carSphereOffset;
     }
+
+    // Like Update, but is called with every physics update instead of every rendered frame
+    void FixedUpdate () {
+        
+    }
+
 }
