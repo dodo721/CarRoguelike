@@ -111,6 +111,7 @@ public class MeshData {
         mesh.triangles = this.triangles;
         mesh.uv = uvs;
         mesh.normals = calcNormals();
+        
         return mesh;
     }
 }

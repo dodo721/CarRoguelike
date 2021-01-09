@@ -102,7 +102,7 @@ public class LoopingTerrain : MonoBehaviour
             mRend = mesh.AddComponent<MeshRenderer>();
             mRend.material = material;
             mFilter = mesh.AddComponent<MeshFilter>();
-            mesh.AddComponent<Collider>();
+            mesh.AddComponent<MeshCollider>();
             mesh.transform.position = posV3;
             mesh.transform.parent = parent;
             this.setVisible(false);
