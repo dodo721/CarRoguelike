@@ -69,16 +69,16 @@ public class PlayerController : MonoBehaviour
     public static readonly int LAYER_MASK_IGNORE_OBJECTS_ONLY = ~(1 << 2);
 
     ///<summary>Masks the layers "Player", "Ignore Raycast" and "Invisible Walls"</summary>
-    public static readonly int LAYER_MASK_IGNORE_PLAYER = ~((1 << 2) | (1 << 10) | (1 << 8));
+    public static readonly int LAYER_MASK_IGNORE_PLAYER = ~((1 << 2) | (1 << 10) | (1 << 3));
 
     ///<summary>Masks the layer "Player"</summary>
-    public static readonly int LAYER_MASK_IGNORE_PLAYER_ONLY = ~(1 << 8);
+    public static readonly int LAYER_MASK_IGNORE_PLAYER_ONLY = ~(1 << 3);
 
     ///<summary>Masks the layers "Player" and "Invisible Walls"</summary>
-    public static readonly int LAYER_MASK_IGNORE_PLAYER_AND_WALLS_ONLY = ~((1 << 8) | (1 << 10));
+    public static readonly int LAYER_MASK_IGNORE_PLAYER_AND_WALLS_ONLY = ~((1 << 3) | (1 << 10));
 
     ///<summary>Masks the layers "Player" and "Ingnore Raycasts"</summary>
-    public static readonly int LAYER_MASK_IGNORE_PLAYER_AND_OBJECTS_ONLY = ~((1 << 8) | (1 << 2));
+    public static readonly int LAYER_MASK_IGNORE_PLAYER_AND_OBJECTS_ONLY = ~((1 << 3) | (1 << 2));
 
     ///<summary>Masks no layers</summary>
     public static readonly int LAYER_MASK_ALL = ~0;
