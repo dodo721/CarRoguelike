@@ -299,6 +299,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1991509713, guid: 296f55ac771853c46bfc19f0db091d14, type: 3}
+      propertyPath: stickStationaryMultiplier
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1991509714, guid: 296f55ac771853c46bfc19f0db091d14, type: 3}
+      propertyPath: m_Drag
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1991509714, guid: 296f55ac771853c46bfc19f0db091d14, type: 3}
+      propertyPath: m_Mass
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1991509714, guid: 296f55ac771853c46bfc19f0db091d14, type: 3}
+      propertyPath: m_AngularDrag
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 686952671732560302, guid: 296f55ac771853c46bfc19f0db091d14, type: 3}
       propertyPath: m_Name
       value: Player
