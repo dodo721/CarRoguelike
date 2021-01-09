@@ -20,7 +20,7 @@ public class CarController : MonoBehaviour
     public float groundAdjustSmooth = 8f;
     public Transform carBody;
     public CarSphere carSphere;
-    
+
     private Rigidbody rb;
     private bool accelerating;
     private bool reversing;
@@ -85,30 +85,9 @@ public class CarController : MonoBehaviour
     }
 
     // Like Update, but is called with every physics update instead of every rendered frame
-    // Physics in Unity all have deltaTime accounted for inherently (obviously) - so using this keeps our physics calculations in sync with the game
     void FixedUpdate () {
-        
         transform.up = Vector3.Lerp(transform.up, carSphere.groundNormal, Time.deltaTime * groundAdjustSmooth);
         carBody.Rotate(new Vector3(0, steer * angularAcceleration, 0));
-        /*Vector3 down = -transform.up;
-        Vector3 rayStart = transform.position + (down * floorRaycastStart);
-        if (Physics.Raycast(rayStart, down, floorRaycastLength)) {
-            if (accelerating) {
-                // If transform.forward dot rb.velocity < 0 then the velocity is in the other direction
-                // We don't want the car to stop responding if going the max speed backwards!
-                if (rb.velocity.magnitude < maxSpeed || Vector3.Dot(transform.forward, rb.velocity) < 0) {
-                    rb.AddForce(transform.forward * acceleration, ForceMode.Acceleration);
-                }
-            }
-            if (reversing) {
-                if (rb.velocity.magnitude < maxSpeed || Vector3.Dot(-transform.forward, rb.velocity) < 0) {
-                    rb.AddForce((-transform.forward) * acceleration, ForceMode.Acceleration);
-                }
-            }
-        }
-        float steerStrength = steer * angularAcceleration;
-        //rb.AddTorque(Vector3.up * steerStrength, ForceMode.Acceleration);
-        rb.MoveRotation(transform.rotation * Quaternion.Euler(0, steerStrength, 0));*/
     }
 
 }
