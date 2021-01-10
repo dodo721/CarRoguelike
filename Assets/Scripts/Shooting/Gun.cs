@@ -27,11 +27,11 @@ public class Gun : MonoBehaviour
             Debug.Log(hit.transform.name);
             Instantiate(bullet,transform.position,transform.rotation);
 
-            Target target = hit.transform.GetComponent<Target>();
-            if (target != null) {
+            //Target target = hit.transform.GetComponent<Target>();
+            //if (target != null) {
 
-               target.TakeDamage(10f);
-            }
+           //    target.TakeDamage(10f);
+           // }
         }
     }   
 }

@@ -28,7 +28,13 @@ public class BulletMove : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
 
-        Debug.Log("YOOOOOOOOOOO");
+        Target target = collision.transform.GetComponent<Target>();
+        if (target != null)
+        {
+
+            target.TakeDamage(10f);
+        }
+    
         Die();
        
     }
