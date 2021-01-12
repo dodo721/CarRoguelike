@@ -24,12 +24,21 @@ public class LoopingTerrain : MonoBehaviour
         mapGen = FindObjectOfType<MapGen>();
         chunkSize = MapGen.mapChunkSize - 1;
         
-        Debug.Log("Visible : " + maxViewDist + " / " + chunkSize);
         maxViewDist = detailLevels[detailLevels.Length - 1].distFromPlayer;
 
         chunksVisible = Mathf.RoundToInt(maxViewDist / chunkSize);
 
         UpdateVisibleChunks();
+    }
+
+    public int getChunkSize()
+    {
+        return this.chunkSize;
+    }
+
+    public Dictionary<Vector2, TerrainChunk> getCoordsTerrainDict()
+    {
+        return terrainDict;
     }
 
     void Update()
@@ -50,15 +59,11 @@ public class LoopingTerrain : MonoBehaviour
         int curChunkX = Mathf.RoundToInt(playerPos.x / chunkSize);
         int curChunkY = Mathf.RoundToInt(playerPos.y / chunkSize);
 
-        Debug.Log("Visible: " + chunksVisible);
-
         for(int y = -chunksVisible; y <= chunksVisible; y++)
         {
             for(int x = -chunksVisible; x <= chunksVisible; x++)
             {
-                Vector2 chunkCoord = new Vector2(curChunkX + x, curChunkY + y);
-                Debug.Log(chunkCoord.ToString());
-                
+                Vector2 chunkCoord = new Vector2(curChunkX + x, curChunkY + y);                
                 if (terrainDict.ContainsKey(chunkCoord))
                 {
                     var foundChunk = terrainDict[chunkCoord];
@@ -78,16 +83,18 @@ public class LoopingTerrain : MonoBehaviour
         GameObject mesh;
         Bounds bounds;
 
-        
         MeshRenderer mRend;
         MeshFilter mFilter;
-        
+        MeshCollider mCollider;
+
         LODInfo[] detailLevels;
         LODMesh[] lodMeshes;
-
+        
         MapData mapData;
         bool recievedMapdata;
         int prevLODIndex = -1;
+
+        float[,] heightMap;
 
         public TerrainChunk(Vector2 coord, int size, Transform parent, Material material, LODInfo[] detailLevels)
         {
@@ -102,7 +109,8 @@ public class LoopingTerrain : MonoBehaviour
             mRend = mesh.AddComponent<MeshRenderer>();
             mRend.material = material;
             mFilter = mesh.AddComponent<MeshFilter>();
-            mesh.AddComponent<MeshCollider>();
+            mCollider = mesh.AddComponent<MeshCollider>();
+            
             mesh.transform.position = posV3;
             mesh.transform.parent = parent;
             this.setVisible(false);
@@ -113,12 +121,24 @@ public class LoopingTerrain : MonoBehaviour
                 lodMeshes[i] = new LODMesh(detailLevels[i].lod, UpdateTerainChunk);
             }
 
+
             mapGen.RequestMapData(pos, OnMapDataRecieved);
+        }
+
+        public LODInfo getLodDetail()
+        {
+            return this.detailLevels[0];
+        }
+
+        public float[,] getHeightMap()
+        {
+            return heightMap;
         }
 
         void OnMapDataRecieved(MapData mapData)
         {
             this.mapData = mapData;
+            this.heightMap = mapData.getHeightMap();
             recievedMapdata = true;
             int c = mapGen.getSize();
             Texture2D t = TextureGen.TextureFromColourMap(mapData.colMap, c, c);
@@ -132,8 +152,6 @@ public class LoopingTerrain : MonoBehaviour
             {
                 float dstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(playerPos));
                 bool visible = dstFromNearestEdge <= maxViewDist;
-                Debug.Log(visible);
-                Debug.Log("1. " + dstFromNearestEdge + ",       2. " + maxViewDist);
                 if (visible)
                 {
                     int LODIndex = 0;
@@ -148,7 +166,6 @@ public class LoopingTerrain : MonoBehaviour
                             break;
                         }
                     }
-                    Debug.Log("!! " + LODIndex);
                     if (LODIndex != prevLODIndex)
                     {
                         LODMesh lodMesh = lodMeshes[LODIndex];
@@ -156,6 +173,7 @@ public class LoopingTerrain : MonoBehaviour
                         {
                             mFilter.mesh = lodMesh.mesh;
                             prevLODIndex = LODIndex;
+                            mCollider.sharedMesh = lodMesh.mesh;
                         }
                         else if (lodMesh.hasReq == false)
                         {
