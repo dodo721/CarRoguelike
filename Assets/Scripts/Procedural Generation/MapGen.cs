@@ -47,6 +47,7 @@ public class MapGen : MonoBehaviour
 
     Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new Queue<MapThreadInfo<MapData>>();
     Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
+
     public void DrawMapInEditor()
     {
         MapData map = GenerateMapData(Vector2.zero);
@@ -73,6 +74,11 @@ public class MapGen : MonoBehaviour
             }
         }
         return new MapData(nMap, colMap);
+    }
+
+    public float getNoiseScale()
+    {
+        return this.noiseScale;
     }
 
     // Add in an height offset to each point in heightMap
@@ -192,6 +198,11 @@ public struct MapData {
     {
         this.heightMap = heightMap;
         this.colMap = colMap;
+    }
+
+    public float[,] getHeightMap()
+    {
+        return heightMap;
     }
 }
 
