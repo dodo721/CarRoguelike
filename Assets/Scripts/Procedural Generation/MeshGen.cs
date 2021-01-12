@@ -26,7 +26,9 @@ public static class MeshGen
             for(int x = 0; x < w; x += meshSimplificationInc)
             {
                 float noiseVal = heightMap[x, y];
-                terMesh.vertices[vertexIndex] = new Vector3(topLeftX  + x, getMeshHeightFromNoise(noiseVal, heightCoefficient, heightExponent, heightCurve), topLeftZ - y);
+                float height = getMeshHeightFromNoise(noiseVal, heightCoefficient, heightExponent, heightCurve);
+                height -= getMeshHeightFromNoise(0, heightCoefficient, heightExponent, heightCurve);
+                terMesh.vertices[vertexIndex] = new Vector3(topLeftX  + x, height, topLeftZ - y);
                 terMesh.uvs[vertexIndex] = new Vector2(x / (float)w, y / (float)h);
 
                 if(x < w - 1 && y < h - 1)
@@ -38,14 +40,18 @@ public static class MeshGen
                 vertexIndex++;
             }
         }
+
+        terMesh.iamthesenate();
         return terMesh;
     }
     
-    private static float getMeshHeightFromNoise(float height, float coefficient, float exponent, AnimationCurve curve)
+    public static float getMeshHeightFromNoise(float height, float coefficient, float exponent, AnimationCurve curve)
     {
         return curve.Evaluate(Mathf.Round(height * exponent) / exponent) * coefficient;
        
     }
+
+    
 }
 
 
@@ -100,7 +106,6 @@ public class MeshData {
         Vector3 pC = vertices[c];
         Vector3 ab = pB - pA;
         Vector3 ac = pC - pA;
-        return new Vector3(0, 1, 0);
         return Vector3.Cross(ab, ac).normalized;
     }
 
@@ -110,8 +115,27 @@ public class MeshData {
         mesh.vertices = this.vertices;
         mesh.triangles = this.triangles;
         mesh.uv = uvs;
-        mesh.normals = calcNormals();
-        
+        mesh.RecalculateNormals();
         return mesh;
+    }
+
+    public void iamthesenate()
+    {
+        flatShading();
+    }
+
+    void flatShading()
+    {
+        Vector3[] fsVertices = new Vector3[triangles.Length];
+        Vector2[] fsUvs = new Vector2[triangles.Length];
+        for(int i = 0; i < triangles.Length; i++)
+        {
+            fsVertices[i] = vertices[triangles[i]];
+            fsUvs[i] = uvs[triangles[i]];
+            triangles[i] = i;
+        }
+
+        vertices = fsVertices;
+        uvs = fsUvs;
     }
 }
