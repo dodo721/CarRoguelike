@@ -7,6 +7,9 @@ public class CarSphere : MonoBehaviour
 {
 
     public CarController car;
+    [Header("Turning velocity")]
+    public AnimationCurve velocityTurningCurve;
+    public float velocityMultiplier;
     [Header("Ground detection")]
     public float floorRaycastStart = 0.5f;
     public float floorRaycastLength = 0.1f;
@@ -17,7 +20,15 @@ public class CarSphere : MonoBehaviour
     private bool gas;
     private bool reverse;
     private Rigidbody rb;
-    private bool onGround = false;
+    [HideInInspector]
+    public bool onGround = false;
+
+    public float Velocity {
+        get {
+            Vector2 xzVelocity = new Vector2(rb.velocity.x, rb.velocity.z);
+            return xzVelocity.magnitude;
+        }
+    }
 
     void Start () {
         rb = GetComponent<Rigidbody>();
@@ -25,8 +36,8 @@ public class CarSphere : MonoBehaviour
     
     void Update () {
         car.transform.up = Vector3.Lerp(car.transform.up, groundNormal, Time.deltaTime * car.groundAdjustSmooth);
-        if (gas || reverse)
-            car.carBody.Rotate(new Vector3(0, car.steer * car.angularAcceleration * Time.deltaTime, 0));
+        float velocityFac = velocityTurningCurve.Evaluate(rb.velocity.magnitude * velocityMultiplier);
+        car.carBody.Rotate(new Vector3(0, car.steer * car.angularAcceleration * velocityFac * Time.deltaTime, 0));
     }
 
     void FixedUpdate() {

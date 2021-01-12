@@ -15,6 +15,7 @@ public class CarController : MonoBehaviour
     public float maxReverseSpeed;
     [Min(0)]
     public float angularAcceleration;
+    public float velocityTurningFac;
 
     [Header("Car Sphere")]
     public float groundAdjustSmooth = 8f;
@@ -22,8 +23,6 @@ public class CarController : MonoBehaviour
     public CarSphere carSphere;
 
     private Rigidbody rb;
-    private bool accelerating;
-    private bool reversing;
     [HideInInspector]
     public float steer; // -1 -> 1 from left -> right
     private Vector3 carSphereOffset;
@@ -42,22 +41,6 @@ public class CarController : MonoBehaviour
     // Inputs are managed in start/stop fashion on key up/down
     // We could check every frame to use less methods -
     // but our calculations are done in FixedUpdate, not Update, so it would be out of sync (see below)
-
-    // Forward
-    public void StartAcceleration () {
-        accelerating = true;
-    }
-    public void StopAcceleration () {
-        accelerating = false;
-    }
-
-    // Backward
-    public void StartReversing () {
-        reversing = true;
-    }
-    public void StopReversing () {
-        reversing = false;
-    }
 
     // Steering inputs are added together - this way left + right = no dominant steer
 
