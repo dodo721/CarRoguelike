@@ -3,7 +3,12 @@ guid: 44f4f9071cd6c5a4fb6951aa1835383d
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SpeedoGlass
+    second: {fileID: 2100000, guid: 07aa2f96662d190439dd40285f4295e9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
