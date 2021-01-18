@@ -4,18 +4,34 @@ Shader "Custom/MomentumBar"
 {
     Properties
     {
-        _LiquidColour ("Liquid Colour", Color) = (1, 1, 1, 1)
+        [Header(Liquid properties)]
+        _LiquidColourMax ("Liquid Colour Max", Color) = (1, 1, 1, 1)
+        _LiquidColourMin ("Liquid Colour Min", Color) = (0, 0, 0, 0)
+        _LiquidEmmissionMax ("Liquid Emmision Max", Color) = (0, 0, 0, 0)
+        _LiquidEmmissionMin ("Liquid Emmision Min", Color) = (0, 0, 0, 0)
+        _LevelMax ("Level Max", Float) = 1
+        _LevelMin ("Level Min", Float) = 0
         _LiquidIOR ("Liquid IOR", Float) = 1
         _LiquidThickness ("Liquid Thickness", Float) = 1
+        
+        [Header(Glass properties)]
         _GlassColour ("Glass Colour", Color) = (1, 1, 1, 1)
         _GlassIOR ("Glass IOR", Float) = 1
         _GlassThickness("Glass Thickness", Float) = 1
         _GlassVariation("Glass Variation Map", 2D) = "grey" {}
         _GlassVaryStr("Glass Variation Strength", Float) = 1
+
+        [Header(Shine properties)]
         _Roughness ("Roughness", Range(0,1)) = 0.5
+        _Specular ("Specular", Float) = 1
+
+        [Header(Level properties)]
         _Level ("Level", Float) = 0
-        _MinCutoff ("Min Cutoff", Vector) = (0,0,0,0)
-        _MaxCutoff ("Max Cutoff", Vector) = (1,0,0,0)
+        [KeywordEnum(X, Y, Z)] _LevelAxis ("Level Axis", Float) = 0
+        [Toggle(INVERT_LEVEL)] _InvertLevel ("Invert Level Axis", Float) = 0
+        _LevelWaveAmp ("Wave Amplitude", Float) = 0.1
+        _LevelWaveFreq ("Wave Frequency", Float) = 1
+        _LevelWaveDensity ("Wave Density", Float) = 1
     }
     SubShader
     {
@@ -29,7 +45,7 @@ Shader "Custom/MomentumBar"
         //}
 
         GrabPass{
-            "_GrabTexture1"
+            //"_GrabTexture1"
             // Uncomment to cause all textures to use the same grabbed texture
         }
 
@@ -40,6 +56,8 @@ Shader "Custom/MomentumBar"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fog
+            #pragma multi_compile _LEVELAXIS_X _LEVELAXIS_Y _LEVELAXIS_Z
+            #pragma shader_feature INVERT_LEVEL
             #include "UnityCG.cginc"
             #include "UnityLightingCommon.cginc" // for _LightColor0
             
@@ -65,22 +83,55 @@ Shader "Custom/MomentumBar"
                 fixed4 diff : COLOR0; // diffuse lighting color
             };
 
-            float4 _LiquidColour;
+            float4 _LiquidColourMax;
+            float4 _LiquidColourMin;
+            float _LevelMax;
+            float _LevelMin;
             float _LiquidIOR;
             float _LiquidThickness;
+            float4 _LiquidEmmissionMax;
+            float4 _LiquidEmmissionMin;
             float _GlassThickness;
-            float4 _MinCutoff;
-            float4 _MaxCutoff;
             float _Roughness;
             float _Level;
+            float _LevelWaveDensity;
+            float _LevelWaveFreq;
+            float _LevelWaveAmp;
+            float _LevelWaveZOffset;
             
             // builtin variable to get Grabbed Texture if GrabPass has no name
-            sampler2D _GrabTexture1;
+            sampler2D _GrabTexture;
             
             v2f vert (appdata v) {
                 v2f o;
+#ifdef _LEVELAXIS_X
+                float3 levelDir = float3(0, 1, 0);
+#elif _LEVELAXIS_Y
+                float3 levelDir = float3(0, 0, 1);
+#elif _LEVELAXIS_Z
+                float3 levelDir = float3(1, 0, 0);
+#endif
                 float3 vertex = v.vertex - (v.normal * _GlassThickness);
-                vertex.y -= _Level;
+                float level = _Level + (_LevelWaveAmp * sin((vertex * _LevelWaveDensity * levelDir) + (_Time.y * _LevelWaveFreq)));
+#ifdef _LEVELAXIS_X
+#ifdef INVERT_LEVEL
+                vertex.x = max(vertex.x, level);
+#else
+                vertex.x = min(vertex.x, level);
+#endif
+#elif _LEVELAXIS_Y
+#ifdef INVERT_LEVEL
+                vertex.y = max(vertex.y, level);
+#else
+                vertex.y = min(vertex.y, level);
+#endif
+#elif _LEVELAXIS_Z
+#ifdef INVERT_LEVEL
+                vertex.z = max(vertex.z, level);
+#else
+                vertex.z = min(vertex.z, level);
+#endif
+#endif
                 o.vertex = UnityObjectToClipPos(vertex);
                 o.uv = v.uv;
                 // compute world space position of the vertex
@@ -124,7 +175,7 @@ Shader "Custom/MomentumBar"
                 float fresnel = pow(1.0 - saturate(ndotv), 2.0);
 
                 fixed4 grab = tex2Dproj(
-                    _GrabTexture1,
+                    _GrabTexture,
                     i.screenUV + liquidRefractOffset
                     //i.screenUV + float4( sin((_Time.y * 10)+i.screenUV.x*32.0)*0.1, 0, 0, 0)
                 );
@@ -140,10 +191,12 @@ Shader "Custom/MomentumBar"
                 reflCol.rgb = skyColor;
                 float spec = 1 - _Roughness;
 
-                float4 refractedColour = (grab * (1 - fresnel)) * _LiquidColour;
+                float levelBlend = abs((_Level - _LevelMin) / (_LevelMax - _LevelMin));
+
+                float4 refractedColour = (grab * (1 - fresnel)) * lerp(_LiquidColourMin, _LiquidColourMax, levelBlend);
                 refractedColour += (reflCol * spec * fresnel * i.diff);
                 
-                return refractedColour;// * i.diff;
+                return refractedColour + lerp(_LiquidEmmissionMin, _LiquidEmmissionMax, levelBlend);// * i.diff;
                 //return lerp(refractedColour * i.diff, _GlassColour * i.diff * 0.5, saturate(fresnel + _GlassThickness));
             }
 
@@ -151,7 +204,7 @@ Shader "Custom/MomentumBar"
         }
 
         GrabPass{
-            "_GrabTexture2"
+            //"_GrabTexture2"
             // Uncomment to cause all textures to use the same grabbed texture
         }
 
@@ -194,9 +247,10 @@ Shader "Custom/MomentumBar"
             sampler2D _GlassVariation;
             float _GlassVaryStr;
             float _Roughness;
+            float _Specular;
             
             // builtin variable to get Grabbed Texture if GrabPass has no name
-            sampler2D _GrabTexture2;
+            sampler2D _GrabTexture;
             
             v2f vert (appdata v) {
                 v2f o;
@@ -245,7 +299,7 @@ Shader "Custom/MomentumBar"
                 float fresnel = pow(1.0 - saturate(ndotv), 2.0);
 
                 fixed4 grab = tex2Dproj(
-                    _GrabTexture2,
+                    _GrabTexture,
                     i.screenUV + glassRefractOffset
                     //i.screenUV + float4( sin((_Time.y * 10)+i.screenUV.x*32.0)*0.1, 0, 0, 0)
                 );
@@ -261,8 +315,14 @@ Shader "Custom/MomentumBar"
                 reflCol.rgb = skyColor;
                 float spec = 1 - _Roughness;
 
+                float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
+                float3 specReflectDirection = reflect(-lightDirection, i.worldNormal);
+                float3 specSeeDirection = max(0.0,dot(specReflectDirection, i.viewDir));
+                float3 shininessPower = pow(specSeeDirection, _Specular);
+
                 float4 refractedColour = (grab * (1 - fresnel)) * _GlassColour;
                 refractedColour += (reflCol * spec * fresnel * i.diff);
+                refractedColour.rgb += shininessPower;
                 
                 return refractedColour;// * i.diff;
                 //return lerp(refractedColour * i.diff, _GlassColour * i.diff * 0.5, saturate(fresnel + _GlassThickness));

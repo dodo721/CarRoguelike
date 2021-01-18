@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Liquid
   m_Shader: {fileID: 4800000, guid: 03b072c3583889a4b91deea95334fda6, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: LEVEL_Y _LEVELAXIS_Y
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -66,11 +66,25 @@ Material:
     - _DstBlend: 0
     - _GlassIOR: 1.5
     - _GlassThickness: 0.05
-    - _GlassVaryStr: 1
+    - _GlassVaryStr: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LiquidIOR: 1.345
+    - _InvertLevel: 0
+    - _Level: 0.14
+    - _LevelAxis: 1
+    - _LevelMax: 1
+    - _LevelMin: 0
+    - _LevelWaveAmp: -0.04
+    - _LevelWaveDensity: 8.15
+    - _LevelWaveFreq: 1
+    - _LevelWaveZOffset: 11.32
+    - _LevelXDir: 0
+    - _LevelYDir: 1
+    - _LevelZDir: 0
+    - _LiquidGlossiness: 0.413
+    - _LiquidIOR: 1.33
+    - _LiquidMetallic: 0
     - _LiquidThickness: 1
     - _Metallic: 0
     - _Mode: 0
@@ -78,6 +92,7 @@ Material:
     - _Parallax: 0.02
     - _Roughness: 0
     - _SmoothnessTextureChannel: 0
+    - _Specular: 11.25
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
@@ -85,8 +100,15 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GlassColour: {r: 0.04346344, g: 0.3773585, b: 0, a: 1}
-    - _LiquidColour: {r: 0.9339623, g: 0.3908429, b: 0, a: 1}
+    - _GlassColour: {r: 1, g: 1, b: 1, a: 1}
+    - _LevelDirection: {r: 0, g: 1, b: 0, a: 0}
+    - _LevelWaveDirection: {r: 1, g: 0, b: 1, a: 0}
+    - _LiquidColour: {r: 1, g: 0, b: 0, a: 1}
+    - _LiquidColourMax: {r: 1, g: 1, b: 1, a: 1}
+    - _LiquidColourMin: {r: 0, g: 0, b: 0, a: 1}
+    - _LiquidEmission: {r: 1, g: 1, b: 1, a: 1}
+    - _LiquidEmmissionMax: {r: 0, g: 0, b: 0, a: 0}
+    - _LiquidEmmissionMin: {r: 0, g: 0, b: 0, a: 0}
     - _MaxCutoff: {r: 1, g: 0, b: 0, a: 0}
     - _MinCutoff: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
