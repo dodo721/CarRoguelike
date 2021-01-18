@@ -193,7 +193,7 @@ Shader "Custom/MomentumBar"
 
                 float levelBlend = abs((_Level - _LevelMin) / (_LevelMax - _LevelMin));
 
-                float4 refractedColour = (grab * (1 - fresnel)) * lerp(_LiquidColourMin, _LiquidColourMax, levelBlend);
+                float4 refractedColour = (grab * (1 - fresnel)) * lerp(_LiquidColourMin, _LiquidColourMax, levelBlend) * (levelBlend + 1);
                 refractedColour += (reflCol * spec * fresnel * i.diff);
                 
                 return refractedColour + lerp(_LiquidEmmissionMin, _LiquidEmmissionMax, levelBlend);// * i.diff;
