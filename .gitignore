@@ -63,3 +63,7 @@ crashlytics-build.properties
 
 # VS Code settings
 .vscode/
+
+# Large raw model/texture files
+*_HP.fbx
+*.spp
