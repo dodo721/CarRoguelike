@@ -10,6 +10,7 @@ public class MomentumBarLevel : MonoBehaviour
     private Material material;
     private float minBarLevel = 0;
     private float maxBarLevel = 1;
+    
     public float maxVelocity = 10;
     public float smooth;
 
@@ -29,7 +30,6 @@ public class MomentumBarLevel : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (carSphereRB == null) carSphereRB = PlayerController.i.controlling.GetComponent<CarController>().carSphere.GetComponent<Rigidbody>();
