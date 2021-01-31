@@ -1,5 +1,59 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &37479495
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 37479496}
+  - component: {fileID: 37479497}
+  m_Layer: 3
+  m_Name: CameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &37479496
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37479495}
+  m_LocalRotation: {x: 0.41989696, y: -0, z: -0, w: 0.90757185}
+  m_LocalPosition: {x: 39.199795, y: 40.33, z: -35.66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 686952671732560303}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &37479497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37479495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53c052de721dfb64296600a6a26fd009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localSpeedOffset: {x: -0, y: -0, z: -1}
+  groundCheckRaycastHeight: 10000
+  groundClearance: 3
+  sphereCastRadius: 3
+  distFromPlayer: 1.5
+  staticOffset: {fileID: 686952672894207721}
+  losCheckCycles: 50
+  losHeightIncrement: 1
+  spherecastBackOffset: 10
+  carSphere: {fileID: 1991509713}
+  spherecastCircleDensity: 2.37
 --- !u!1 &1991509709
 GameObject:
   m_ObjectHideFlags: 0
@@ -85,7 +139,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floorRaycastStart: 1.81
   floorRaycastLength: 1
+  groundNormalSmooth: 1
   groundNormal: {x: 0, y: 0, z: 0}
+  carDown: {x: 0, y: -1, z: 0}
+  groundContactPoint: {x: 0, y: 0, z: 0}
+  groundOffset: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
   onGround: 0
 --- !u!1 &686952671606119474
@@ -133,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95c71279821f2c4a8d47058d075680e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 37479497}
   speed: 10
   rotationSpeed: 0
   followRotation: 0
@@ -291,6 +349,41 @@ MonoBehaviour:
               m_BoolArgument: 0
             m_CallState: 2
     input: Down
+  - actions:
+      hold:
+        m_PersistentCalls:
+          m_Calls: []
+      down:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 686952671613966249}
+            m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+            m_MethodName: StartDrift
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      up:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 686952671613966249}
+            m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+            m_MethodName: StopDrift
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+    input: Drift
   overrideDefaultControls: 1
   controlling: {fileID: 0}
   cameraTransform: {fileID: 0}
@@ -346,7 +439,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carBody: {fileID: 686725168404079514}
   carSphere: {fileID: 1991509713}
+  thisControllable: {fileID: 0}
+  groundOffsetSmooth: 10
   steer: 0
+  drifting: 0
 --- !u!114 &82935814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,14 +457,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carSphere: {fileID: 1991509713}
   car: {fileID: 686952671613966249}
-  driftSmoke:
-  - {fileID: 5464484550847215609}
-  - {fileID: 1033868473}
-  - {fileID: 3805731873169670456}
+  turnEffects:
   - {fileID: 2369531889435336716}
-  - {fileID: 3753386239215012916}
-  - {fileID: 4613039795450717151}
-  driftThreshold: 50
+  - {fileID: 3805731873169670456}
+  turnEffectThreshold: 10
+  driftEffects:
+  - {fileID: 0}
+  - {fileID: 5464484550847215609}
+  impactDust: {fileID: 2348535166926021559, guid: c70b80aeff86d2a4192f1d365e53a46a, type: 3}
+  dustImpulseThreshold: 1000
 --- !u!114 &987625544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +505,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   velocityTurningMultiplier: 0.01
+  driftTurningMultiplier: 2
+  driftSpeedMultiplier: 0.5
+  impactForce: 30
   groundAdjustSmooth: 8
   stickStrength: 5
 --- !u!114 &987625543
@@ -422,7 +522,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2f2deef9220c2e46a86df7bb441ca5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTarget: {fileID: 686952672894207721}
+  cameraStaticOffset: {fileID: 686952672894207721}
+  cameraTarget: {fileID: 37479497}
   isDefaultControllable: 1
   playerStats: {fileID: 0}
 --- !u!1 &686952671732560302
@@ -455,6 +556,7 @@ Transform:
   - {fileID: 686952671606119475}
   - {fileID: 686952671613966251}
   - {fileID: 1991509710}
+  - {fileID: 37479496}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -647,7 +749,7 @@ GameObject:
   m_Component:
   - component: {fileID: 686952672894207721}
   m_Layer: 3
-  m_Name: CameraTarget
+  m_Name: CameraStaticOffset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -676,7 +778,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2369531889071317034, guid: 45c4aef9f3e6c574e9690eb6e96a564d, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2369531889071317034, guid: 45c4aef9f3e6c574e9690eb6e96a564d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -786,11 +888,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77559e9654facc64c821042906bc1d34, type: 3}
---- !u!198 &3753386239215012916 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3753386239048059734, guid: 77559e9654facc64c821042906bc1d34, type: 3}
-  m_PrefabInstance: {fileID: 504137570}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &679340512
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -798,14 +895,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 691591685133525580}
     m_Modifications:
-    - target: {fileID: 5464484550441066009, guid: 133f565d692fc934db03372269ddbc47, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 0.075
-      objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066012, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_Name
       value: Sparks
       objectReference: {fileID: 0}
+    - target: {fileID: 5464484550441066014, guid: 133f565d692fc934db03372269ddbc47, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 48392506d30e73b428381685aa419d0c, type: 2}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -938,9 +1035,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
---- !u!4 &691591685133525580 stripped
+--- !u!4 &691837672574304206 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4940284382815030, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4905343255805620, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
   m_PrefabInstance: {fileID: 686952671433015674}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &686725168404079514 stripped
@@ -948,9 +1045,9 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4282831317426912, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
   m_PrefabInstance: {fileID: 686952671433015674}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &691837672574304206 stripped
+--- !u!4 &691591685133525580 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4905343255805620, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4940284382815030, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
   m_PrefabInstance: {fileID: 686952671433015674}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1455481040539181340
@@ -1019,48 +1116,40 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 2369531889071317028, guid: 45c4aef9f3e6c574e9690eb6e96a564d, type: 3}
   m_PrefabInstance: {fileID: 1455481040539181340}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &5464484550484282016
+--- !u!1001 &2620984924408869570
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 691837672574304206}
     m_Modifications:
-    - target: {fileID: 5464484550441066009, guid: 133f565d692fc934db03372269ddbc47, type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5464484550441066009, guid: 133f565d692fc934db03372269ddbc47, type: 3}
-      propertyPath: InitialModule.startSize.minScalar
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5464484550441066009, guid: 133f565d692fc934db03372269ddbc47, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 0.075
-      objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066012, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_Name
       value: Sparks
       objectReference: {fileID: 0}
+    - target: {fileID: 5464484550441066014, guid: 133f565d692fc934db03372269ddbc47, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 48392506d30e73b428381685aa419d0c, type: 2}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.81900024
+      value: 0.749
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.0000038146973
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.529
+      value: -1.5289993
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.30749
+      value: 0.43128464
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1068,7 +1157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.9515513
+      value: 0.90221596
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1080,7 +1169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 144.184
+      value: 128.902
       objectReference: {fileID: 0}
     - target: {fileID: 5464484550441066015, guid: 133f565d692fc934db03372269ddbc47, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -1088,11 +1177,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 133f565d692fc934db03372269ddbc47, type: 3}
---- !u!198 &1033868473 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5464484550441066009, guid: 133f565d692fc934db03372269ddbc47, type: 3}
-  m_PrefabInstance: {fileID: 5464484550484282016}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8363883407349393545
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1106,7 +1190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6167145106646892557, guid: 77559e9654facc64c821042906bc1d34, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6167145106646892557, guid: 77559e9654facc64c821042906bc1d34, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1150,8 +1234,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77559e9654facc64c821042906bc1d34, type: 3}
---- !u!198 &4613039795450717151 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3753386239048059734, guid: 77559e9654facc64c821042906bc1d34, type: 3}
-  m_PrefabInstance: {fileID: 8363883407349393545}
-  m_PrefabAsset: {fileID: 0}
