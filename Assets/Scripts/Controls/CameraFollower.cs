@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraFollower : MonoBehaviour
 {
 
-    public Transform target;
+    public CameraTarget target;
     public float speed;
     public float rotationSpeed;
     public bool followRotation = true;
@@ -25,7 +25,16 @@ public class CameraFollower : MonoBehaviour
     }
 
     void Follow () {
-        transform.position = Vector3.Lerp(transform.position, target.position, speed * Time.deltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, target.rotation, rotationSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, target.transform.position, speed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, target.transform.rotation, rotationSpeed * Time.deltaTime);
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos () {
+        if (target != null) {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawLine(transform.position, target.transform.position);
+        }
+    }
+#endif
 }
