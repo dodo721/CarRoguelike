@@ -83,36 +83,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578f80d161bd4d044b6d78f723d60dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 686952671613966249}
-  velocityTurningCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  velocityMultiplier: 0.01
   floorRaycastStart: 1.81
   floorRaycastLength: 1
-  stickStrength: 60
   groundNormal: {x: 0, y: 0, z: 0}
+  rb: {fileID: 0}
   onGround: 0
 --- !u!1 &686952671606119474
 GameObject:
@@ -140,7 +114,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 686952671606119474}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 39.199795, y: 42.314735, z: -24.786448}
+  m_LocalPosition: {x: 39.199795, y: 40.33, z: -33.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 686952672875482032}
@@ -322,6 +296,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   speed: 30
   direction: {x: 0, y: 0, z: 0}
+  playerStats: {fileID: 0}
 --- !u!1 &686952671613966250
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,9 +306,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 686952671613966251}
-  - component: {fileID: 686952671613966248}
   - component: {fileID: 686952671613966249}
   - component: {fileID: 82935814}
+  - component: {fileID: 987625544}
+  - component: {fileID: 987625543}
   m_Layer: 3
   m_Name: PlayerCar
   m_TagString: Untagged
@@ -356,20 +332,6 @@ Transform:
   m_Father: {fileID: 686952671732560303}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &686952671613966248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 686952671613966250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2f2deef9220c2e46a86df7bb441ca5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTarget: {fileID: 686952672894207721}
-  isDefaultControllable: 1
 --- !u!114 &686952671613966249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,13 +344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec510af541e79894cb221920e2f881af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 180
-  maxSpeed: 50
-  decceleration: 10
-  maxReverseSpeed: 20
-  angularAcceleration: 200
-  velocityTurningFac: 0
-  groundAdjustSmooth: 10
   carBody: {fileID: 686725168404079514}
   carSphere: {fileID: 1991509713}
   steer: 0
@@ -414,6 +369,62 @@ MonoBehaviour:
   - {fileID: 3753386239215012916}
   - {fileID: 4613039795450717151}
   driftThreshold: 50
+--- !u!114 &987625544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 686952671613966250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8bc9d5e9188bcb49b6e62b9b9417241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceleration: 200
+  angularAcceleration: 100
+  velocityTurningCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  velocityTurningMultiplier: 0.01
+  groundAdjustSmooth: 8
+  stickStrength: 5
+--- !u!114 &987625543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 686952671613966250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2f2deef9220c2e46a86df7bb441ca5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTarget: {fileID: 686952672894207721}
+  isDefaultControllable: 1
+  playerStats: {fileID: 0}
 --- !u!1 &686952671732560302
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +486,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 686952672875482045}
-  m_LocalRotation: {x: 0.3880156, y: -0, z: -0, w: 0.92165285}
+  m_LocalRotation: {x: 0.30887303, y: -0, z: -0, w: 0.9511033}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -567,7 +578,7 @@ MonoBehaviour:
   volumeTrigger: {fileID: 686952672875482032}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
   antialiasingMode: 0
@@ -624,7 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca4d4df3c2f921045b26a94d49fcaab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fovVelocityFac: 0.3
+  fovVelocityFac: 0.1
   smooth: 10
 --- !u!1 &686952672894207720
 GameObject:
@@ -650,7 +661,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 686952672894207720}
   m_LocalRotation: {x: 0.41989696, y: -0, z: -0, w: 0.90757185}
-  m_LocalPosition: {x: 0, y: 28.009998, z: -29.77}
+  m_LocalPosition: {x: 0, y: 26.025265, z: -38.243553}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 686725168404079514}
@@ -927,9 +938,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
---- !u!4 &691837672574304206 stripped
+--- !u!4 &691591685133525580 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4905343255805620, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4940284382815030, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
   m_PrefabInstance: {fileID: 686952671433015674}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &686725168404079514 stripped
@@ -937,9 +948,9 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4282831317426912, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
   m_PrefabInstance: {fileID: 686952671433015674}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &691591685133525580 stripped
+--- !u!4 &691837672574304206 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4940284382815030, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4905343255805620, guid: 7a1d88942353f4528b7e0dcbf832516b, type: 3}
   m_PrefabInstance: {fileID: 686952671433015674}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1455481040539181340

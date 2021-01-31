@@ -51,11 +51,21 @@ public class PlayerController : MonoBehaviour
     private CameraFollower cameraFollower;
     public float speed;
     private CharacterController controller;
-    public static PlayerController i;
     private Rigidbody draggingObject;
     private GameObject hovered;
     private GameObject selected;
     public Vector3 direction;
+    public PlayerStats playerStats;
+
+    public static PlayerController i;
+    public delegate void ControllableSetter (PlayerControllable instance);
+    public static event ControllableSetter OnControllableChange;
+
+    // LAYERS
+
+    public static readonly int LAYER_PLAYER = 3;
+    public static readonly int LAYER_IGNORE_RAYCAST = 2;
+    public static readonly int LAYER_INVIS_WALLS = 10;
 
     // RAYCAST LAYERMASK CONSTANTS
 
@@ -92,9 +102,6 @@ public class PlayerController : MonoBehaviour
         foreach (ControllerActionSerialized cas in actionRegisterSerialized) {
             actionRegister.Add(cas.input, cas.actions);
         }
-    }
-
-    void Start () {
         cameraFollower = GetComponent<CameraFollower>();
     }
 
@@ -298,7 +305,11 @@ public class PlayerController : MonoBehaviour
             cameraFollower = GetComponent<CameraFollower>();
         }
         cameraFollower.target = controllable.cameraTarget;
-        cameraTransform = controllable.cameraTarget;
+        cameraTransform = controllable.cameraTarget.transform;
+        playerStats = controllable.playerStats;
+        if (OnControllableChange != null) {
+            OnControllableChange(controllable);
+        }
     }
 
 #if UNITY_EDITOR

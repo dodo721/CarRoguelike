@@ -5,7 +5,20 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
 
-    public int health;
+    [Header("Movement")]
+    public float acceleration;
+    public float angularAcceleration;
+    public AnimationCurve velocityTurningCurve;
+    public float velocityTurningMultiplier;
+    public float driftTurningMultiplier = 2;
+    public float driftSpeedMultiplier = 0.75f;
+
+    [Header("Physics")]
+    public float impactForce = 2f;
+
+    [Header("Ground tracking")]
+    [Min(1)] public float groundAdjustSmooth = 8f;
+    public float stickStrength = 5f;
 
     // Start is called before the first frame update
     void Start()

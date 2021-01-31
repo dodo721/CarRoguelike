@@ -23,6 +23,6 @@ public class CameraVelocityFOV : MonoBehaviour
     {
         if (carSphere == null)
             carSphere = PlayerController.i.controlling.GetComponent<CarController>().carSphere;
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, startFOV + (carSphere.Velocity * fovVelocityFac), Time.deltaTime * smooth);
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, startFOV + (carSphere.XZVelocityMagnitude * fovVelocityFac), Time.deltaTime * smooth);
     }
 }

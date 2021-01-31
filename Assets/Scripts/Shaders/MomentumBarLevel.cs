@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
-public class MomentumBarLevel : MonoBehaviour
+public class MomentumBarLevel : PlayerAccessor
 {
 
     private Rigidbody carSphereRB;
@@ -13,6 +13,10 @@ public class MomentumBarLevel : MonoBehaviour
     
     public float maxVelocity = 10;
     public float smooth;
+
+    protected override void OnControllableChange (PlayerControllable controllable) {
+        carSphereRB = controllable.GetComponent<CarController>().carSphere.GetComponent<Rigidbody>();
+    }
 
     void Start () {
         MeshRenderer render = GetComponent<MeshRenderer>();
@@ -32,7 +36,6 @@ public class MomentumBarLevel : MonoBehaviour
 
     void Update()
     {
-        if (carSphereRB == null) carSphereRB = PlayerController.i.controlling.GetComponent<CarController>().carSphere.GetComponent<Rigidbody>();
         float normalisedVelocity = carSphereRB.velocity.magnitude / maxVelocity;
         float level = normalisedVelocity * (maxBarLevel - minBarLevel) + minBarLevel;
         float currentLevel = material.GetFloat("_Level");

@@ -2,13 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerStats))]
 public class PlayerControllable : MonoBehaviour
 {
 
-    public Transform cameraTarget;
+    public Transform cameraStaticOffset;
+    public CameraTarget cameraTarget;
     public bool isDefaultControllable = false;
+    [HideInInspector]
+    public PlayerStats playerStats;
     public float LockHeight {
         get; private set;
+    }
+
+    void Awake () {
+        playerStats = GetComponent<PlayerStats>();
     }
 
     // Start is called before the first frame update
